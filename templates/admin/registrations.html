@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Student Registrations</h2>
+<a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary mb-3">Back</a>
+<table class="table table-striped">
+  <thead><tr><th>Student</th><th>Email</th><th>Event</th><th>Venue</th><th>Registered At</th></tr></thead>
+  <tbody>
+    {% for reg, user, event in rows %}
+      <tr>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ event.title }}</td>
+        <td>{{ event.venue }}</td>
+        <td>{{ reg.registered_at }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5" class="text-center">No registrations yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
