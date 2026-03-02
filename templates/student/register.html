@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-md-5"><div class="card p-4">
+<h3>Create Student Account</h3>
+<form method="post">
+  <div class="mb-2"><input class="form-control" name="name" placeholder="Full name" required></div>
+  <div class="mb-2"><input type="email" class="form-control" name="email" placeholder="Email" required></div>
+  <div class="mb-2"><input type="password" class="form-control" name="password" placeholder="Password" required></div>
+  <button class="btn btn-primary w-100">Register</button>
+</form>
+</div></div></div>
+{% endblock %}

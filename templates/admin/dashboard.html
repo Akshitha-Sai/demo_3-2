@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Admin Dashboard</h2>
+  <a href="{{ url_for('admin.logout') }}" class="btn btn-outline-secondary">Logout</a>
+</div>
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="card p-3"><h5>Events</h5><h3>{{ total_events }}</h3></div></div>
+  <div class="col-md-3"><div class="card p-3"><h5>Users</h5><h3>{{ total_users }}</h3></div></div>
+  <div class="col-md-3"><div class="card p-3"><h5>Registrations</h5><h3>{{ total_registrations }}</h3></div></div>
+  <div class="col-md-3"><div class="card p-3"><h5>Blocked IP logs</h5><h3>{{ blocked_ips }}</h3></div></div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card p-3 mb-4">
+      <h5>Create Event</h5>
+      <form method="post" action="{{ url_for('admin.create_event') }}" class="row g-2">
+        <div class="col-md-6"><input class="form-control" name="title" placeholder="Title" required></div>
+        <div class="col-md-6"><input class="form-control" name="venue" placeholder="Venue" required></div>
+        <div class="col-12"><textarea class="form-control" name="description" placeholder="Description" required></textarea></div>
+        <div class="col-md-4"><input type="date" class="form-control" name="date" required></div>
+        <div class="col-md-4"><input type="time" class="form-control" name="time" required></div>
+        <div class="col-md-4"><input type="date" class="form-control" name="deadline" required></div>
+        <div class="col-12"><button class="btn btn-primary">Create Event</button></div>
+      </form>
+    </div>
+
+    <div class="card p-3 mb-4">
+      <h5>Events (Update/Delete)</h5>
+      {% for event in events %}
+      <form method="post" action="{{ url_for('admin.update_event', event_id=event.id) }}" class="row g-2 border-bottom py-2">
+        <div class="col-md-2"><input class="form-control" name="title" value="{{ event.title }}" required></div>
+        <div class="col-md-3"><input class="form-control" name="description" value="{{ event.description }}" required></div>
+        <div class="col-md-2"><input type="date" class="form-control" name="date" value="{{ event.date }}" required></div>
+        <div class="col-md-1"><input type="time" class="form-control" name="time" value="{{ event.time.strftime('%H:%M') }}" required></div>
+        <div class="col-md-2"><input class="form-control" name="venue" value="{{ event.venue }}" required></div>
+        <div class="col-md-2 d-flex gap-1">
+          <input type="date" class="form-control" name="deadline" value="{{ event.deadline }}" required>
+          <button class="btn btn-sm btn-success">Save</button>
+        </div>
+      </form>
+      <form method="post" action="{{ url_for('admin.delete_event', event_id=event.id) }}" class="mt-1 mb-2">
+        <button class="btn btn-sm btn-outline-danger">Delete {{ event.title }}</button>
+      </form>
+      {% else %}<p class="text-muted">No events yet.</p>{% endfor %}
+    </div>
+
+    <div class="card p-3">
+      <h5>Live Traffic (Last 60 Minutes)</h5>
+      <canvas id="trafficChart" height="100"></canvas>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card p-3 mb-3">
+      <h5>Phishing URL Check</h5>
+      <form method="post" action="{{ url_for('admin.phishing_check') }}" class="d-flex gap-2">
+        <input class="form-control" name="url" placeholder="https://example.com" required>
+        <button class="btn btn-warning">Scan</button>
+      </form>
+    </div>
+
+    <div class="card p-3 mb-3">
+      <h5>Unblock IP</h5>
+      <form method="post" action="{{ url_for('admin.unblock_ip') }}" class="d-flex gap-2">
+        <input class="form-control" name="ip_address" placeholder="IP address" required>
+        <button class="btn btn-secondary">Unblock</button>
+      </form>
+    </div>
+
+    <div class="card p-3 mb-3">
+      <h5>Recent DDoS Logs</h5>
+      <ul class="small">
+      {% for log in recent_attack_logs %}
+        <li>{{ log.timestamp }} | {{ log.ip_address }} | count={{ log.request_count }} | blocked={{ log.is_blocked }}</li>
+      {% endfor %}
+      </ul>
+    </div>
+
+    <div class="card p-3">
+      <h5>Recent Phishing Logs</h5>
+      <ul class="small">
+      {% for row in recent_phishing %}
+        <li>{{ row.checked_at }} | {{ row.url }} | {{ row.detected_as }}</li>
+      {% endfor %}
+      </ul>
+      <a class="btn btn-sm btn-outline-primary mt-2" href="{{ url_for('admin.registrations') }}">View Registrations</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

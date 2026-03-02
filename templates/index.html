@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="card p-4">
+      <h3>Admin Portal</h3>
+      <p>Manage events, monitor security alerts, and inspect traffic analytics.</p>
+      <a href="{{ url_for('admin.login') }}" class="btn btn-primary">Admin Login</a>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card p-4">
+      <h3>Student Portal</h3>
+      <p>Register, browse upcoming events, and receive confirmation emails.</p>
+      <div class="d-flex gap-2">
+        <a href="{{ url_for('student.login') }}" class="btn btn-success">Student Login</a>
+        <a href="{{ url_for('student.register') }}" class="btn btn-outline-success">Create Account</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
